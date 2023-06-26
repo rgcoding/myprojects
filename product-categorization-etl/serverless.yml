@@ -1,0 +1,72 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+
+
+service: intacct
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'int'}
+  region : us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+      Resource: "arn:aws:s3:::data-eng-havi-labs/*"
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: "arn:aws:lambda:us-west-2:159246121673:function:havi-lab-api-service-${self:provider.stage}-categorization"
+
+functions:
+  categorization:
+    handler: intacct_categorization.lambda_handler
+    events:
+      - schedule: cron(0 14 * * ? *)
+    environment:
+      ENV: ${self:provider.stage}
+      SNOWFLAKE_ACCOUNT: xxxxx
+      NAME: ETL_LOAD_USER
+      PASS: xxxxx
+    layers:
+      - arn:aws:lambda:us-west-2:159246121673:layer:pandas_sqlalchemy_lambda_layer:1
+    memorySize: 512
+    timeout: 600
+  intacct-objects:
+    handler: intacct_etl.lambda_handler
+    events:
+      - schedule: cron(0 14 * * ? *)
+    environment:
+      ENV: ${self:provider.stage}
+      SNOWFLAKE_ACCOUNT: xxxxx
+      NAME: ETL_LOAD_USER
+      PASS: xxxxx
+    layers:
+      - arn:aws:lambda:us-west-2:159246121673:layer:pandas_sqlalchemy_lambda_layer:1
+    memorySize: 512
+    timeout: 600
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    slim: true
+
+package:
+  individually: true
+  include:
+    - "!./**"
+    - "intacct_categorization.py"
+    - "intacct_etl.py"
+    - "database/database.py"
+    - "database/snow.py"
+    - "havi_etl_helpers.py"
+
+  exclude:
+    - "**"

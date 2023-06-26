@@ -1,0 +1,67 @@
+# Welcome to Serverless!
+#
+# This file is the main config file for your service.
+# It's very minimal at this point and uses default values.
+# You can always add more config options for more control.
+
+
+service: emp-upload-etl
+provider:
+  name: aws
+  runtime: python3.6
+  stage: prod
+  region : us-west-2
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:ListBucket
+        - s3:GetObject
+      Resource: "arn:aws:s3:::data-eng-cresco-labs/*"
+    - Effect: Allow
+      Action:
+        - "secretsmanager:GetSecretValue"
+      Resource: 
+        - "arn:aws:secretsmanager:us-west-2:159246121673:secret:/prod/db/snowflake-FrDhB6"
+        - "arn:aws:secretsmanager:us-west-2:159246121673:secret:/prod/db/CrescoLabs/postgres-Zm4qRu"
+
+
+functions:
+  etl:
+    handler: lambda_function.lambda_handler
+    events:
+      - schedule: cron(0 11,16 ? * 2-6 *)
+    environment:
+      PG_SECRET_NAME: /prod/db/CrescoLabs/postgres
+      REGION_NAME: us-west-2
+      SNOW_WAREHOUSE: COMPUTE_WH
+      SNOW_DATABASE: FIVETRAN_DB
+      SNOW_SCHEMA: HR
+      SNOW_ROLE: ETL_LOAD_ROLE
+      SNOW_SECRET_NAME: /prod/db/snowflake
+    layers:
+      - arn:aws:lambda:us-west-2:159246121673:layer:data_eng_lambda_layer_v1:1
+    memorySize: 512
+    timeout: 860
+
+plugins:
+  - serverless-python-requirements
+custom:
+  pythonRequirements:
+    slim: true
+
+package:
+  individually: true
+  include:
+    - "!./**"
+    - "lambda_function.py"
+    - "database.py"
+    - "snow.py"
+    - "postgres.py"
+    - "secrets.py"
+    - "psycopg2/**"
+    - "bastion-ssh-key-pair.pem"
+
+ 
+
+  exclude:
+    - "**"
