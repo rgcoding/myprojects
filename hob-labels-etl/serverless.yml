@@ -40,11 +40,11 @@ functions:
       SMTP_PORT: 587
       SENDER: uploads@crescolabs.com
       PASSWORD: d:'Xy-c.7:WKa!5
-      recipients: udai.shergill@crescolabs.com,micah.davidson@crescolabs.com,aaron.cole@crescolabs.com
-      SQL_SERVER: '{"host":"hob-labels-prod.cjcyi9ibddks.us-east-2.rds.amazonaws.com", "user":"crescolabs", "password":"4BCd3k787UAclj2209Bnreaz82", "port":1433,"database":"hob_labels","driver":"ODBC Driver 17 for SQL Server"}'
-      JOLIET: '{"host":"cresco.biotrackaws.net", "user":"rocrescojoliet", "password":"ahkeiKu7aexa", "port":5433,"database":"biotrackthc"}'
-      KANKAKEE: '{"host":"cresco.biotrackaws.net", "user":"rocrescokankakee", "password":"MaiN9peyuak7", "port":5434,"database":"biotrackthc"}'
-      LINCOLN: '{"host":"cresco.biotrackaws.net", "user":"rocrescolincoln", "password":"voghie9eiPh7", "port":5432,"database":"biotrackthc"}'
+      recipients: xxxx@yyyyyy.com
+      SQL_SERVER: '{"host":"xxxxx.us-east-2.rds.amazonaws.com", "user":"xxxx", "password":"xxxxx", "port":1433,"database":"hob_labels","driver":"ODBC Driver 17 for SQL Server"}'
+      JOLIET: '{"host":"biox.net", "user":"userx", "password":"passwordx", "port":5433,"database":"biox"}'
+      KANKAKEE: '{"host":"bioy.net", "user":"usery", "password":"passwordy", "port":5434,"database":"bioy"}'
+      LINCOLN: '{"host":"bioz.net", "user":"userz", "password":"passwordz", "port":5432,"database":"bioz"}'
     layers:
       - arn:aws:lambda:us-west-2:159246121673:layer:data_engineering_pandas_sqlalchemy_v2:1
       - arn:aws:lambda:us-west-2:159246121673:layer:pyodbc:1
